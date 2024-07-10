@@ -2,6 +2,7 @@ package com.jpm.nycschools.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import com.jpm.nycschools.datasources.NycSchoolsLocalDataSource
 import com.jpm.nycschools.datasources.NycSchoolsRemoteDataSource
@@ -33,10 +34,13 @@ class NycSchoolsViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    private val schoolsSatScores: HashMap<String, SatScore> = hashMapOf()
-    private val schoolList: HashMap<String, School> = hashMapOf()
+    @VisibleForTesting
+    val schoolsSatScores: HashMap<String, SatScore> = hashMapOf()
+    @VisibleForTesting
+    val schoolList: HashMap<String, School> = hashMapOf()
     private val remoteDataSource: NycSchoolsRemoteDataSource = NycSchoolsRemoteDataSource()
-    private var hasRetrievedData = Pair(false, false)
+    @VisibleForTesting
+    var hasRetrievedData = Pair(false, false)
     private val lock = Mutex()
 
     private suspend fun retrieveSchoolList() {
@@ -127,7 +131,7 @@ class NycSchoolsViewModel: ViewModel() {
             retrieveLocalSatScoresList(context)
         }
     }
-    suspend fun retrieveLocalSatScoresList(context: Context) {
+    private suspend fun retrieveLocalSatScoresList(context: Context) {
         val localDataSource = NycSchoolsLocalDataSource(context)
         val satScoresResponse = localDataSource.retrieveNycSatScoresList()
         if (satScoresResponse.isSuccessful) {
@@ -143,7 +147,7 @@ class NycSchoolsViewModel: ViewModel() {
             remoteLoadError()
         }
     }
-    suspend fun retrieveLocalSchoolsList(context: Context) {
+    private suspend fun retrieveLocalSchoolsList(context: Context) {
         val localDataSource: NycSchoolsLocalDataSource = NycSchoolsLocalDataSource(context)
 
         val schoolsResponse = localDataSource.retrieveNycSchoolsList()
@@ -161,7 +165,8 @@ class NycSchoolsViewModel: ViewModel() {
         }
     }
 
-    private fun refreshSchoolListUi() {
+    @VisibleForTesting
+    fun refreshSchoolListUi() {
         _uiState.update { currentState ->
             UiState(
                 loading = !hasRetrievedData.first || !hasRetrievedData.second,
