@@ -11,10 +11,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Label(text: String) {
     Text(
-        modifier = Modifier.padding(6.dp),
+        modifier = Modifier.padding(start = 6.dp, end = 6.dp),
         text = text,
         color = Color.White,
-        style = MaterialTheme.typography.labelMedium
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 

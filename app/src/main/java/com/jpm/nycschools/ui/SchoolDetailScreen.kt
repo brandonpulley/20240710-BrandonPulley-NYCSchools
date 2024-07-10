@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,38 +19,61 @@ import com.jpm.nycschools.ui.components.HeaderText
 import com.jpm.nycschools.ui.components.Label
 
 @Composable
-fun SchoolDetailScreen(school: School, satScore: SatScore) {
+fun SchoolDetailScreen(school: School, satScore: SatScore, onClickDismiss: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.DarkGray)
     ) {
-        Label(text = "School name")
-        HeaderText(text = school.schoolName)
-        Spacer(modifier = Modifier.height(12.dp))
-        Label(text = "City")
-        HeaderText(text = school.city)
-        Spacer(modifier = Modifier.height(12.dp))
-        Label(text = "SAT Critical Reading Avg Scores")
-        HeaderText(text = satScore.satCriticalReadingAvgScore)
+        LabelAndDetailsText(label = "School name", details = school.schoolName)
+        LabelAndDetailsText(label = "City", details = school.city)
+        LabelAndDetailsText(label = "Number of SAT takers", details = satScore.numOfSatTestTakers)
+        LabelAndDetailsText(
+            label = "SAT Critical Reading Avg Scores",
+            details = satScore.satCriticalReadingAvgScore
+        )
+        LabelAndDetailsText(
+            label = "SAT Writing Avg Scores",
+            details = satScore.satWritingAvgScore
+        )
+        LabelAndDetailsText(
+            label = "SAT Math Avg Scores",
+            details = satScore.satMathAvgScore
+        )
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onClickDismiss
+        ) {
+            Text(text = "Dismiss")
+        }
     }
+}
+
+@Composable
+fun LabelAndDetailsText(label: String, details: String) {
+    Label(text = label)
+    HeaderText(text = details)
+    Spacer(modifier = Modifier.height(12.dp))
 }
 
 @Preview
 @Composable
 fun SchoolDetailScreenPreview() {
     MaterialTheme {
-        SchoolDetailScreen(school =School(
-            schoolName = "A Neat School",
-            city = "New Jork"
-        ), satScore = SatScore(
-            schoolName = "A neat school",
-            dbn = "",
-            numOfSatTestTakers = "22",
-            satWritingAvgScore = "600",
-            satMathAvgScore = "500",
-            satCriticalReadingAvgScore = "550"
-        )
-        )
+        SchoolDetailScreen(
+            school = School(
+                schoolName = "A Neat School",
+                city = "New Jork"
+            ), satScore = SatScore(
+                schoolName = "A neat school",
+                dbn = "",
+                numOfSatTestTakers = "22",
+                satWritingAvgScore = "600",
+                satMathAvgScore = "500",
+                satCriticalReadingAvgScore = "550"
+            )
+        ) {
+            // no op
+        }
     }
 }

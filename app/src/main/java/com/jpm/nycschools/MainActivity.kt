@@ -37,7 +37,9 @@ class MainActivity : AppCompatActivity() {
                     SchoolDetailScreen(
                         school = uiState.value.chosenSchool!!,
                         satScore = uiState.value.chosenSatSchoolInfo!!
-                    )
+                    ) {
+                        viewModel.updateChosenSchool(null)
+                    }
                 } else {
                     ShowSchoolsScreen(uiState.value.schoolList) { schoolId ->
                         viewModel.updateChosenSchool(schoolId = schoolId)
