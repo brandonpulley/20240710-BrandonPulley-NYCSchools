@@ -12,8 +12,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 data class UiState(
+    // set this to 'true' when still waiting for network requests to finish
+    val loading: Boolean = false,
     // set this to 'true' when we fail retrieving remote data
     val remoteLoadError: Boolean = false,
     // the list of schools to be displayed
@@ -30,6 +34,8 @@ class NycSchoolsViewModel: ViewModel() {
     private val schoolsSatScores: HashMap<String, SatScore> = hashMapOf()
     private val schoolList: HashMap<String, School> = hashMapOf()
     private val dataSource: NycSchoolsRemoteDataSource = NycSchoolsRemoteDataSource()
+    private var hasRetrievedData = Pair(false, false)
+    private val lock = Mutex()
 
     private suspend fun retrieveSchoolList() {
         val schoolsResponse = dataSource.retrieveNycSchoolsList()
@@ -37,7 +43,10 @@ class NycSchoolsViewModel: ViewModel() {
             schoolsResponse.data.forEach { item ->
                 val school = item as School
                 schoolList[school.dbn] = school
-                refreshSchoolListUi()
+                lock.withLock {
+                    hasRetrievedData = Pair(true, hasRetrievedData.second)
+                    refreshSchoolListUi()
+                }
             }
         } else {
             remoteLoadError()
@@ -50,6 +59,10 @@ class NycSchoolsViewModel: ViewModel() {
             satScoresResponse.data.forEach { item ->
                 val satSchool = item as SatScore
                 schoolsSatScores[satSchool.dbn] = satSchool
+                lock.withLock {
+                    hasRetrievedData = Pair(hasRetrievedData.first, true)
+                    refreshSchoolListUi()
+                }
             }
         } else {
             remoteLoadError()
@@ -71,6 +84,7 @@ class NycSchoolsViewModel: ViewModel() {
         // reset load error value
         _uiState.update { currentState ->
             UiState(
+                loading = !hasRetrievedData.first || !hasRetrievedData.second,
                 remoteLoadError = false,
                 schoolList = currentState.schoolList,
                 chosenSchool = currentState.chosenSchool,
@@ -78,6 +92,7 @@ class NycSchoolsViewModel: ViewModel() {
             )
         }
 
+        hasRetrievedData = Pair(false, false)
         CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
             retrieveSchoolList()
         }
@@ -93,6 +108,7 @@ class NycSchoolsViewModel: ViewModel() {
     private fun refreshSchoolListUi() {
         _uiState.update { currentState ->
             UiState(
+                loading = !hasRetrievedData.first || !hasRetrievedData.second,
                 remoteLoadError = currentState.remoteLoadError,
                 schoolList = schoolList.values.toList(),
                 chosenSchool = currentState.chosenSchool,
@@ -104,6 +120,7 @@ class NycSchoolsViewModel: ViewModel() {
     fun updateChosenSchool(schoolId: String?) {
         _uiState.update { currentState ->
             UiState(
+                loading = !hasRetrievedData.first || !hasRetrievedData.second,
                 remoteLoadError = currentState.remoteLoadError,
                 schoolList = currentState.schoolList,
                 chosenSchool = schoolList[schoolId],
