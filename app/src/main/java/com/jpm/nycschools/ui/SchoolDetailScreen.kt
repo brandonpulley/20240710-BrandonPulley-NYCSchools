@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jpm.nycschools.models.SatScore
 import com.jpm.nycschools.models.School
+import com.jpm.nycschools.ui.components.HeaderText
+import com.jpm.nycschools.ui.components.Label
 
 @Composable
 fun SchoolDetailScreen(school: School, satScore: SatScore) {
@@ -32,26 +32,6 @@ fun SchoolDetailScreen(school: School, satScore: SatScore) {
         Label(text = "SAT Critical Reading Avg Scores")
         HeaderText(text = satScore.satCriticalReadingAvgScore)
     }
-}
-
-@Composable
-fun Label(text: String) {
-    Text(
-        modifier = Modifier.padding(6.dp),
-        text = text,
-        color = Color.White,
-        style = MaterialTheme.typography.labelMedium
-    )
-}
-
-@Composable
-fun HeaderText(text: String) {
-    Text(
-        modifier = Modifier.padding(6.dp),
-        text = text,
-        color = Color.White,
-        style = MaterialTheme.typography.headlineMedium
-    )
 }
 
 @Preview
