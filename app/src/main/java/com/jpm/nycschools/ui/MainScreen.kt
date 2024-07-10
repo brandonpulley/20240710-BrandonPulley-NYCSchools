@@ -51,14 +51,18 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
         } else if (uiState.value.chosenSchool != null && uiState.value.chosenSatSchoolInfo != null) {
             SchoolDetailScreen(
                 school = uiState.value.chosenSchool!!,
-                satScore = uiState.value.chosenSatSchoolInfo!!
-            ) {
-                viewModel.updateChosenSchool(null)
-            }
+                satScore = uiState.value.chosenSatSchoolInfo!!,
+                onClickDismiss = {
+                    viewModel.updateChosenSchool(null)
+                }
+            )
         } else {
-            ShowSchoolsScreen(uiState.value.schoolList) { schoolId ->
-                viewModel.updateChosenSchool(schoolId = schoolId)
-            }
+            ShowSchoolsScreen(
+                schoolsList = uiState.value.schoolList,
+                onClickSchool = { schoolId ->
+                    viewModel.updateChosenSchool(schoolId = schoolId)
+                }
+            )
         }
     }
 }

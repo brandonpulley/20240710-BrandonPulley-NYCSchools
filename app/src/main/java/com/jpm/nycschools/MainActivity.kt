@@ -14,9 +14,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // try retrieving data only when the app is freshly launched,
+        // and not on orientation changes
         if (savedInstanceState == null) {
-            // try retrieving data only when the app is freshly launched,
-            // and not on orientation changes
             viewModel.retrieveRemoteData()
         }
 
