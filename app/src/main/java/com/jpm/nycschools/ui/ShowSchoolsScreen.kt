@@ -37,10 +37,8 @@ fun SchoolView(school: School, onClickSchool: (String) -> Unit) {
         .clickable {
             onClickSchool(school.dbn)
         }) {
-        Text(
-            text = "school name: ${school.schoolName}",
-            color = Color.White
-        )
+        LabelAndDetailsText(label = "School Name", details = school.schoolName)
+        LabelAndDetailsText(label = "Neighborhood", details = school.neighborhood)
     }
 }
 
@@ -48,10 +46,10 @@ fun SchoolView(school: School, onClickSchool: (String) -> Unit) {
 @Composable
 fun ShowSchoolsScreenPreview() {
     val schools = listOf(
-        School(schoolName = "Examplerary School"),
-        School(schoolName = "Another School"),
-        School(schoolName = "a Third School"),
-        )
+        School(schoolName = "Examplerary School", neighborhood = "Brooklyn"),
+        School(schoolName = "Another School", neighborhood = "Hunts Point"),
+        School(schoolName = "a Third School", neighborhood = "Old New York"),
+    )
     MaterialTheme {
         ShowSchoolsScreen(schoolsList = schools) {
             // no op

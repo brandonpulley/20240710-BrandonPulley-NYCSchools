@@ -27,6 +27,8 @@ fun SchoolDetailScreen(school: School, satScore: SatScore, onClickDismiss: () ->
     ) {
         LabelAndDetailsText(label = "School name", details = school.schoolName)
         LabelAndDetailsText(label = "City", details = school.city)
+        LabelAndDetailsText(label = "Neighborhood", details = school.neighborhood)
+        LabelAndDetailsText(label = "Final Grades", details = school.finalGrades)
         LabelAndDetailsText(label = "Number of SAT takers", details = satScore.numOfSatTestTakers)
         LabelAndDetailsText(
             label = "SAT Critical Reading Avg Scores",
