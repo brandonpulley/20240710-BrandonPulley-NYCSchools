@@ -12,8 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jpm.nycschools.R
 import com.jpm.nycschools.models.School
 
 
@@ -36,8 +38,14 @@ fun SchoolView(school: School, onClickSchool: (String) -> Unit) {
         .clickable {
             onClickSchool(school.dbn)
         }) {
-        LabelAndDetailsText(label = "School Name", details = school.schoolName)
-        LabelAndDetailsText(label = "Neighborhood", details = school.neighborhood)
+        LabelAndDetailsText(
+            label = stringResource(id = R.string.school_name),
+            details = school.schoolName
+        )
+        LabelAndDetailsText(
+            label = stringResource(id = R.string.neighborhood),
+            details = school.neighborhood
+        )
     }
 }
 

@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jpm.nycschools.R
 import com.jpm.nycschools.ui.components.HeaderText
 import com.jpm.nycschools.ui.components.Label
 
@@ -20,19 +22,19 @@ fun NetworkLoadErrorScreen(onClickRetry: () -> Unit, onClickLoadLocalData: () ->
             .fillMaxWidth()
             .background(Color.DarkGray)
     ) {
-        HeaderText(text = "Network Load Error")
-        Label(text = "There was an error when retrieving data from the network. You can try refreshing or you can load the data that was bundled with the app")
+        HeaderText(text = stringResource(id = R.string.network_load_error))
+        Label(text = stringResource(id = R.string.network_load_error_msg))
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClickRetry
         ) {
-            Text(text = "Retry network request")
+            Text(text = stringResource(id = R.string.retry_network_request))
         }
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClickLoadLocalData
         ) {
-            Text(text = "Load local data")
+            Text(text = stringResource(id = R.string.load_local_data))
         }
     }
 }

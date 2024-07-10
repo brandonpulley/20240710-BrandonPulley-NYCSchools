@@ -11,8 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jpm.nycschools.R
 import com.jpm.nycschools.viewmodels.NycSchoolsViewModel
 
 @Composable
@@ -30,7 +32,7 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
                 .padding(6.dp)
                 .fillMaxWidth()
                 .background(Color.Gray),
-            text = "NYC Schools",
+            text = stringResource(id = R.string.nyc_schools),
             color = Color.White,
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center

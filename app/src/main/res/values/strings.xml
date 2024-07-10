@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">NycSchools</string>
+    <string name="nyc_schools">NYC Schools</string>
+    <string name="network_load_error">Network Load Error</string>
+    <string name="network_load_error_msg">There was an error when retrieving data from the network. You can try refreshing or you can load the data that was bundled with the app</string>
+    <string name="retry_network_request">Retry network request</string>
+    <string name="load_local_data">Load local data</string>
+    <string name="loading">Loading</string>
+    <string name="loading_msg">Retrieving data from the server…</string>
+    <string name="school_name">School Name</string>
+    <string name="city">City</string>
+    <string name="neighborhood">Neighborhood</string>
+    <string name="final_grades">Final Grades</string>
+    <string name="num_sat_takers">Number of SAT takers</string>
+    <string name="sat_reading_score">SAT Critical Reading Avg Scores</string>
+    <string name="sat_writing_score">SAT Writing Avg Scores</string>
+    <string name="sat_math_score">SAT Math Avg Scores</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

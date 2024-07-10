@@ -7,7 +7,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jpm.nycschools.R
 import com.jpm.nycschools.ui.components.HeaderText
 import com.jpm.nycschools.ui.components.Label
 
@@ -18,8 +20,8 @@ fun LoadingScreen() {
             .fillMaxWidth()
             .background(Color.DarkGray)
     ) {
-        HeaderText(text = "Loading")
-        Label(text = "Retrieving data from the server...")
+        HeaderText(text = stringResource(id = R.string.loading))
+        Label(text = stringResource(id = R.string.loading_msg))
     }
 }
 
