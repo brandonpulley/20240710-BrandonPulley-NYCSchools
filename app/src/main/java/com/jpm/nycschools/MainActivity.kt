@@ -9,11 +9,14 @@ import com.jpm.nycschools.ui.MainScreen
 import com.jpm.nycschools.viewmodels.NycSchoolsViewModel
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel: NycSchoolsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel: NycSchoolsViewModel by viewModels()
-        viewModel.retrieveRemoteData()
+        if (savedInstanceState == null) {
+            viewModel.retrieveRemoteData()
+        }
 
         setContent {
             MaterialTheme {
