@@ -3,6 +3,9 @@ package com.jpm.nycschools.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +23,7 @@ fun ShowSchoolsScreen(schoolsList: List<School>, onClickSchool: (String) -> Unit
     LazyColumn {
         items(schoolsList.size) { index ->
             SchoolView(school = schoolsList[index], onClickSchool)
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -29,6 +33,7 @@ fun SchoolView(school: School, onClickSchool: (String) -> Unit) {
     Column(modifier = Modifier
         .background(Color.DarkGray)
         .padding(8.dp)
+        .fillMaxWidth()
         .clickable {
             onClickSchool(school.dbn)
         }) {
@@ -41,10 +46,14 @@ fun SchoolView(school: School, onClickSchool: (String) -> Unit) {
 
 @Preview
 @Composable
-fun SchoolViewPreview() {
-    val school = School(schoolName = "Examplerary School")
+fun ShowSchoolsScreenPreview() {
+    val schools = listOf(
+        School(schoolName = "Examplerary School"),
+        School(schoolName = "Another School"),
+        School(schoolName = "a Third School"),
+        )
     MaterialTheme {
-        SchoolView(school = school) {
+        ShowSchoolsScreen(schoolsList = schools) {
             // no op
         }
     }
