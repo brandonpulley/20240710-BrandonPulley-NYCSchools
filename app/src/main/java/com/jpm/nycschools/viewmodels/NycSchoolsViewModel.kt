@@ -1,7 +1,9 @@
 package com.jpm.nycschools.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.jpm.nycschools.datasources.NycSchoolsLocalDataSource
 import com.jpm.nycschools.datasources.NycSchoolsRemoteDataSource
 import com.jpm.nycschools.models.SatScore
 import com.jpm.nycschools.models.School
@@ -33,12 +35,12 @@ class NycSchoolsViewModel: ViewModel() {
 
     private val schoolsSatScores: HashMap<String, SatScore> = hashMapOf()
     private val schoolList: HashMap<String, School> = hashMapOf()
-    private val dataSource: NycSchoolsRemoteDataSource = NycSchoolsRemoteDataSource()
+    private val remoteDataSource: NycSchoolsRemoteDataSource = NycSchoolsRemoteDataSource()
     private var hasRetrievedData = Pair(false, false)
     private val lock = Mutex()
 
     private suspend fun retrieveSchoolList() {
-        val schoolsResponse = dataSource.retrieveNycSchoolsList()
+        val schoolsResponse = remoteDataSource.retrieveNycSchoolsList()
         if (schoolsResponse.isSuccessful) {
             schoolsResponse.data.forEach { item ->
                 val school = item as School
@@ -54,7 +56,7 @@ class NycSchoolsViewModel: ViewModel() {
     }
 
     private suspend fun retrieveSatScores() {
-        val satScoresResponse = dataSource.retrieveNycSatScoresList()
+        val satScoresResponse = remoteDataSource.retrieveNycSatScoresList()
         if (satScoresResponse.isSuccessful) {
             satScoresResponse.data.forEach { item ->
                 val satSchool = item as SatScore
@@ -101,8 +103,62 @@ class NycSchoolsViewModel: ViewModel() {
         }
     }
 
-    fun retrieveLocalData() {
-        // TODO: load data locally and update UI
+    fun retrieveLocalData(context: Context) {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            Log.e("CoroutineException", "exception caught: ${exception.message}")
+            remoteLoadError()
+        }
+        // reset load error value
+        _uiState.update { currentState ->
+            UiState(
+                loading = !hasRetrievedData.first || !hasRetrievedData.second,
+                remoteLoadError = false,
+                schoolList = currentState.schoolList,
+                chosenSchool = currentState.chosenSchool,
+                chosenSatSchoolInfo = currentState.chosenSatSchoolInfo
+            )
+        }
+
+        hasRetrievedData = Pair(false, false)
+        CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
+            retrieveLocalSchoolsList(context)
+        }
+        CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
+            retrieveLocalSatScoresList(context)
+        }
+    }
+    suspend fun retrieveLocalSatScoresList(context: Context) {
+        val localDataSource = NycSchoolsLocalDataSource(context)
+        val satScoresResponse = localDataSource.retrieveNycSatScoresList()
+        if (satScoresResponse.isSuccessful) {
+            satScoresResponse.data.forEach { item ->
+                val satSchool = item as SatScore
+                schoolsSatScores[satSchool.dbn] = satSchool
+                lock.withLock {
+                    hasRetrievedData = Pair(hasRetrievedData.first, true)
+                    refreshSchoolListUi()
+                }
+            }
+        } else {
+            remoteLoadError()
+        }
+    }
+    suspend fun retrieveLocalSchoolsList(context: Context) {
+        val localDataSource: NycSchoolsLocalDataSource = NycSchoolsLocalDataSource(context)
+
+        val schoolsResponse = localDataSource.retrieveNycSchoolsList()
+        if (schoolsResponse.isSuccessful) {
+            schoolsResponse.data.forEach { item ->
+                val school = item as School
+                schoolList[school.dbn] = school
+                lock.withLock {
+                    hasRetrievedData = Pair(true, hasRetrievedData.second)
+                    refreshSchoolListUi()
+                }
+            }
+        } else {
+            remoteLoadError()
+        }
     }
 
     private fun refreshSchoolListUi() {

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jpm.nycschools.viewmodels.NycSchoolsViewModel
@@ -22,6 +23,7 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
     ) {
 
         val uiState = viewModel.uiState.collectAsState()
+        val context = LocalContext.current
 
         Text(
             modifier = Modifier
@@ -39,7 +41,7 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
                     viewModel.retrieveRemoteData()
                 },
                 onClickLoadLocalData = {
-                    viewModel.retrieveLocalData()
+                    viewModel.retrieveLocalData(context)
                 }
             )
         } else if (uiState.value.loading) {

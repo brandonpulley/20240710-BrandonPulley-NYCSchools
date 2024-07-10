@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
+            // try retrieving data only when the app is freshly launched,
+            // and not on orientation changes
             viewModel.retrieveRemoteData()
         }
 
