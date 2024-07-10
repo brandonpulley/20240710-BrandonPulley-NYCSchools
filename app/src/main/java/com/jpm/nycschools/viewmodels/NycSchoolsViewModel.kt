@@ -1,20 +1,28 @@
 package com.jpm.nycschools.viewmodels
 
-class NycSchoolsViewModel {
+import androidx.lifecycle.ViewModel
+import com.jpm.nycschools.models.School
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-    // TODO: Remove me after integrating data/endpoints
-    // list of highschools
-    // https://data.cityofnewyork.us/Education/DOE-High-School-Directorv-2017/s3k6-pzi2
-    // query data json here:
-    // https://data.cityofnewyork.us/resource/s3k6-pzi2.json
-    // docs:
-    // https://dev.socrata.com/foundry/data.cityofnewyork.us/f9bf-2cp4
+data class UiState(
+    // the list of schools to be displayed
+    val schoolList: List<School> = listOf(),
+    // the school currently being displayed, null if none chosen
+    val chosenSchoolId: String? = null,
+    // the map of schoolId (key) to satscore (value)
+    val schoolsSatScores: Map<String, School> = mapOf()
+)
 
-    // list of sat scores
-    // https://data.cityofnewyork.us/Education/SAT-Results/f9bf-2cp4
-    // query data json here:
-    // https://data.cityofnewyork.us/resource/f9bf-2cp4.json
-    // docs:
-    // https://dev.socrata.com/foundry/data.cityofnewyork.us/f9bf-2cp4
+class NycSchoolsViewModel: ViewModel() {
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
 
+    fun retrieveSchoolList() {
+
+    }
+
+    fun updateChosenSchool(schoolId: String) {
+
+    }
 }
