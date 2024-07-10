@@ -16,6 +16,9 @@ class MainActivity : AppCompatActivity() {
         setContent {
             MaterialTheme {
                 val uiState = viewModel.uiState.collectAsState()
+                if (uiState.value.chosenSchool != null) {
+
+                }
                 ShowSchoolsScreen(uiState.value.schoolList) { schoolId ->
                     viewModel.updateChosenSchool(schoolId = schoolId)
                 }
