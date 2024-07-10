@@ -14,7 +14,8 @@ class NycSchoolsRemoteDataSource {
             val data: List<Any>
         )
 
-        private val HOST_URL = "https://data.cityofnewyork.us"
+        @VisibleForTesting
+        val HOST_URL = "https://data.cityofnewyork.us"
     }
 
     @VisibleForTesting
@@ -26,13 +27,17 @@ class NycSchoolsRemoteDataSource {
 
     suspend fun retrieveNycSchoolsList(): ApiResponse {
         val response = retrofit.getNycSchools().awaitResponse()
-        return ApiResponse(isSuccessful = response.isSuccessful,
-            data = response.body() ?: listOf())
+        return ApiResponse(
+            isSuccessful = response.isSuccessful,
+            data = response.body() ?: listOf()
+        )
     }
 
     suspend fun retrieveNycSatScoresList(): ApiResponse {
         val response = retrofit.getNycSatScores().awaitResponse()
-        return ApiResponse(isSuccessful = response.isSuccessful,
-            data = response.body() ?: listOf())
+        return ApiResponse(
+            isSuccessful = response.isSuccessful,
+            data = response.body() ?: listOf()
+        )
     }
 }
