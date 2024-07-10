@@ -1,9 +1,11 @@
 package com.jpm.nycschools.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jpm.nycschools.datasources.NycSchoolsRemoteDataSource
 import com.jpm.nycschools.models.SatScore
 import com.jpm.nycschools.models.School
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class UiState(
+    // set this to 'true' when we fail retrieving remote data
+    val remoteLoadError: Boolean = false,
     // the list of schools to be displayed
     val schoolList: List<School> = listOf(),
     // the school currently being displayed, null if none chosen
@@ -36,7 +40,7 @@ class NycSchoolsViewModel: ViewModel() {
                 refreshSchoolListUi()
             }
         } else {
-            // TODO: update UI for failure to get school response
+            remoteLoadError()
         }
     }
 
@@ -48,22 +52,48 @@ class NycSchoolsViewModel: ViewModel() {
                 schoolsSatScores[satSchool.dbn] = satSchool
             }
         } else {
-            // TODO: update UI for failure to get sat response
+            remoteLoadError()
         }
     }
 
-    fun retrieveAllData() {
-        CoroutineScope(Dispatchers.IO).launch {
+    private fun remoteLoadError() {
+        _uiState.update {
+            UiState(remoteLoadError = true)
+        }
+    }
+
+    fun retrieveRemoteData() {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            Log.e("CoroutineException", "exception caught: ${exception.message}")
+            remoteLoadError()
+        }
+
+        // reset load error value
+        _uiState.update { currentState ->
+            UiState(
+                remoteLoadError = false,
+                schoolList = currentState.schoolList,
+                chosenSchool = currentState.chosenSchool,
+                chosenSatSchoolInfo = currentState.chosenSatSchoolInfo
+            )
+        }
+
+        CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
             retrieveSchoolList()
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
             retrieveSatScores()
         }
     }
 
-    fun refreshSchoolListUi() {
+    fun retrieveLocalData() {
+        // TODO: load data locally and update UI
+    }
+
+    private fun refreshSchoolListUi() {
         _uiState.update { currentState ->
             UiState(
+                remoteLoadError = currentState.remoteLoadError,
                 schoolList = schoolList.values.toList(),
                 chosenSchool = currentState.chosenSchool,
                 chosenSatSchoolInfo = currentState.chosenSatSchoolInfo
@@ -74,6 +104,7 @@ class NycSchoolsViewModel: ViewModel() {
     fun updateChosenSchool(schoolId: String?) {
         _uiState.update { currentState ->
             UiState(
+                remoteLoadError = currentState.remoteLoadError,
                 schoolList = currentState.schoolList,
                 chosenSchool = schoolList[schoolId],
                 chosenSatSchoolInfo = schoolsSatScores[schoolId]
