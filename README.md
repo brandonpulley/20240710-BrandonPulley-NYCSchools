@@ -13,7 +13,7 @@ your system:
   $ ./gradlew installDebug
 ```
 
-## Additional Feature
+## SAT Scores Filtering Feature
 The requirements made note that the app should be useful to students, so in addition to the list
 of schools and details of a single school UX there are filters build into the main screen to filter
 schools out based on minimum average SAT scores.
