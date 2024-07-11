@@ -24,6 +24,12 @@ request fails the user is provided an option to either retry the network request
 the local data by clicking the "Load local data" button. These options will be presented if 
 the app starts without internet or if there is any other failure in the network request. 
 
+## Dependency Injection
+One of the test criteria mentions showcasing Dependency Injection; you can see an example of
+"Manual Dependency Injection" (ref:
+[Android Developer docs](https://developer.android.com/training/dependency-injection/manual))
+in the NycSchoolsViewModel class as noted in the referenced documentation.
+
 ## Testing
 There are three different test modules in this app.
 
@@ -48,9 +54,3 @@ connecting a test device you can run the last test like using this command:
 ```shell
   $ ./gradlew connectedAndroidTest
 ```
-
-## Dependency Injection
-One of the test criteria mentions showcasing Dependency Injection; you can see an example of
-"Manual Dependency Injection" (ref: 
-[Android Developer docs](https://developer.android.com/training/dependency-injection/manual))
-in the NycSchoolsViewModel class as noted in the referenced documentation.
