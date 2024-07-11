@@ -14,7 +14,7 @@ fun Label(text: String) {
         modifier = Modifier.padding(start = 6.dp, end = 6.dp),
         text = text,
         color = Color.White,
-        style = MaterialTheme.typography.bodyLarge
+        style = MaterialTheme.typography.labelMedium
     )
 }
 

@@ -14,6 +14,6 @@ fun HeaderText(text: String) {
         modifier = Modifier.padding(start = 6.dp, end = 6.dp),
         text = text,
         color = Color.White,
-        style = MaterialTheme.typography.headlineSmall
+        style = MaterialTheme.typography.bodyLarge
     )
 }
