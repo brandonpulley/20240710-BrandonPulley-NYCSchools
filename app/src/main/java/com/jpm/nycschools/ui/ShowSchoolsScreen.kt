@@ -30,9 +30,7 @@ import com.jpm.nycschools.models.School
 fun ShowSchoolsScreen(
     schoolsList: List<School>,
     onClickSchool: (String) -> Unit,
-    onReadingScoreFiltered: (String) -> Unit,
-    onWritingScoreFiltered: (String) -> Unit,
-    onMathScoreFiltered: (String) -> Unit
+    onSatScoresFiltered: (String, String, String) -> Unit
 ) {
     var minReadingScore by remember { mutableStateOf("") }
     var minWritingScore by remember { mutableStateOf("") }
@@ -41,6 +39,10 @@ fun ShowSchoolsScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        fun updateFilter() {
+            onSatScoresFiltered(minReadingScore, minWritingScore, minMathScore)
+        }
 
         LazyColumn {
             items(schoolsList.size + 3) { index ->
@@ -52,7 +54,7 @@ fun ShowSchoolsScreen(
                             value = minWritingScore,
                             onValueChange = { newText ->
                                 minWritingScore = newText
-                                onWritingScoreFiltered(newText)
+                                updateFilter()
                             },
                             label = { Text("Min Avg Writing Score") },
                             placeholder = {
@@ -66,7 +68,7 @@ fun ShowSchoolsScreen(
                             value = minReadingScore,
                             onValueChange = { newText ->
                                 minReadingScore = newText
-                                onReadingScoreFiltered(newText)
+                                updateFilter()
                             },
                             label = { Text("Min Avg Reading Score") },
                             placeholder = {
@@ -80,7 +82,7 @@ fun ShowSchoolsScreen(
                             value = minMathScore,
                             onValueChange = { newText ->
                                 minMathScore = newText
-                                onMathScoreFiltered(newText)
+                                updateFilter()
                             },
                             label = { Text("Min Avg Math Score") },
                             placeholder = {
@@ -130,9 +132,7 @@ fun ShowSchoolsScreenPreview() {
         ShowSchoolsScreen(
             schoolsList = schools,
             onClickSchool = {},
-            onReadingScoreFiltered = {},
-            onWritingScoreFiltered = {},
-            onMathScoreFiltered = {}
+            onSatScoresFiltered = {_, _, _ -> }
         )
     }
 }

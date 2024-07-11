@@ -42,8 +42,10 @@ class NycSchoolsViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val remoteDataSource = (this[APPLICATION_KEY] as MainApplication).nycSchoolsRemoteDataSource
-                val localDataSource = (this[APPLICATION_KEY] as MainApplication).nycSchoolsLocalDataSource
+                val remoteDataSource =
+                    (this[APPLICATION_KEY] as MainApplication).nycSchoolsRemoteDataSource
+                val localDataSource =
+                    (this[APPLICATION_KEY] as MainApplication).nycSchoolsLocalDataSource
                 NycSchoolsViewModel(
                     remoteDataSource = remoteDataSource,
                     localDataSource = localDataSource
@@ -211,35 +213,43 @@ class NycSchoolsViewModel(
         }
     }
 
-    fun filterMinimumSatScore(reading: String = "0", writing: String = "0", math: String = "0") {
-        try {
-            val readingScore = reading.toInt()
-            val writingScore = writing.toInt()
-            val mathScore = math.toInt()
-
-            _uiState.update { currentState ->
-                val filteredSchools = currentState.schoolList.filter {
-                    try {
-                        (schoolsSatScores[it.dbn]?.satWritingAvgScore?.toInt() ?: 0) > writingScore
-                                && (schoolsSatScores[it.dbn]?.satCriticalReadingAvgScore?.toInt()
-                            ?: 0) > readingScore
-                                && (schoolsSatScores[it.dbn]?.satMathAvgScore?.toInt()
-                            ?: 0) > mathScore
-                    } catch (e: NumberFormatException) {
-                        false
-                    }
-                }
-
-                UiState(
-                    loading = currentState.loading,
-                    remoteLoadError = currentState.remoteLoadError,
-                    schoolList = filteredSchools.toList(),
-                    chosenSchool = currentState.chosenSchool,
-                    chosenSatSchoolInfo = currentState.chosenSatSchoolInfo
-                )
-            }
+    fun filterMinimumSatScore(reading: String, writing: String, math: String) {
+        val readingScore = try {
+            reading.toInt()
         } catch (e: NumberFormatException) {
-            refreshSchoolListUi()
+            0
+        }
+        val writingScore = try {
+            writing.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
+        val mathScore = try {
+            math.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
+
+        _uiState.update { currentState ->
+            val filteredSchools = schoolList.values.filter {
+                try {
+                    (schoolsSatScores[it.dbn]?.satWritingAvgScore?.toInt() ?: 0) > writingScore
+                            && (schoolsSatScores[it.dbn]?.satCriticalReadingAvgScore?.toInt()
+                        ?: 0) > readingScore
+                            && (schoolsSatScores[it.dbn]?.satMathAvgScore?.toInt()
+                        ?: 0) > mathScore
+                } catch (e: NumberFormatException) {
+                    false
+                }
+            }
+
+            UiState(
+                loading = currentState.loading,
+                remoteLoadError = currentState.remoteLoadError,
+                schoolList = filteredSchools.toList(),
+                chosenSchool = currentState.chosenSchool,
+                chosenSatSchoolInfo = currentState.chosenSatSchoolInfo
+            )
         }
     }
 
