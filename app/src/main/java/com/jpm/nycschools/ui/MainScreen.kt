@@ -30,8 +30,7 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
         Text(
             modifier = Modifier
                 .padding(6.dp)
-                .fillMaxWidth()
-                .background(Color.Gray),
+                .fillMaxWidth(),
             text = stringResource(id = R.string.nyc_schools),
             color = Color.White,
             style = MaterialTheme.typography.headlineSmall,
