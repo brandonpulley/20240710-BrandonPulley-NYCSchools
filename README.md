@@ -18,6 +18,12 @@ The requirements made note that the app should be useful to students, so in addi
 of schools and details of a single school UX there are filters build into the main screen to filter
 schools out based on minimum average SAT scores.
 
+## Offline Data
+The data from the provided endpoints have also been packaged with the app. If the network
+request fails the user is provided an option to either retry the network request or to use 
+the local data by clicking the "Load local data" button. These options will be presented if 
+the app starts without internet or if there is any other failure in the network request. 
+
 ## Testing
 There are three different test modules in this app.
 
