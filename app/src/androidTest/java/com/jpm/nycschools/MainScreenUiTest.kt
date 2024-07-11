@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import com.jpm.nycschools.datasources.NycSchoolsRemoteDataSource
 import com.jpm.nycschools.models.SatScore
 import com.jpm.nycschools.models.School
 import com.jpm.nycschools.ui.MainScreen
@@ -17,7 +18,7 @@ class MainScreenUiTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val viewModel: NycSchoolsViewModel = NycSchoolsViewModel()
+    private val viewModel: NycSchoolsViewModel = NycSchoolsViewModel(NycSchoolsRemoteDataSource())
 
     @Test
     fun mainScreenTest() {

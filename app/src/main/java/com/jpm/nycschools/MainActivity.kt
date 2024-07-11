@@ -9,7 +9,7 @@ import com.jpm.nycschools.ui.MainScreen
 import com.jpm.nycschools.viewmodels.NycSchoolsViewModel
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: NycSchoolsViewModel by viewModels()
+    private val viewModel: NycSchoolsViewModel by viewModels{ NycSchoolsViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,6 +4,13 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jpm.nycschools.MainApplication
 import com.jpm.nycschools.datasources.NycSchoolsLocalDataSource
 import com.jpm.nycschools.datasources.NycSchoolsRemoteDataSource
 import com.jpm.nycschools.models.SatScore
@@ -30,7 +37,24 @@ data class UiState(
     val chosenSatSchoolInfo: SatScore? = null
 )
 
-class NycSchoolsViewModel : ViewModel() {
+class NycSchoolsViewModel(
+    private val remoteDataSource: NycSchoolsRemoteDataSource,
+    private val localDataSource: NycSchoolsLocalDataSource
+) : ViewModel() {
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val remoteDataSource = (this[APPLICATION_KEY] as MainApplication).nycSchoolsRemoteDataSource
+                val localDataSource = (this[APPLICATION_KEY] as MainApplication).nycSchoolsLocalDataSource
+                NycSchoolsViewModel(
+                    remoteDataSource = remoteDataSource,
+                    localDataSource = localDataSource
+                )
+            }
+        }
+    }
+
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
@@ -39,7 +63,6 @@ class NycSchoolsViewModel : ViewModel() {
 
     @VisibleForTesting
     val schoolList: HashMap<String, School> = hashMapOf()
-    private val remoteDataSource: NycSchoolsRemoteDataSource = NycSchoolsRemoteDataSource()
 
     @VisibleForTesting
     var hasRetrievedData = Pair(false, false)
@@ -109,7 +132,7 @@ class NycSchoolsViewModel : ViewModel() {
         }
     }
 
-    fun retrieveLocalData(context: Context) {
+    fun retrieveLocalData() {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             Log.e("CoroutineException", "exception caught: ${exception.message}")
             remoteLoadError()
@@ -127,15 +150,14 @@ class NycSchoolsViewModel : ViewModel() {
 
         hasRetrievedData = Pair(false, false)
         CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-            retrieveLocalSchoolsList(context)
+            retrieveLocalSchoolsList()
         }
         CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-            retrieveLocalSatScoresList(context)
+            retrieveLocalSatScoresList()
         }
     }
 
-    private suspend fun retrieveLocalSatScoresList(context: Context) {
-        val localDataSource = NycSchoolsLocalDataSource(context)
+    private suspend fun retrieveLocalSatScoresList() {
         val satScoresResponse = localDataSource.retrieveNycSatScoresList()
         if (satScoresResponse.isSuccessful) {
             satScoresResponse.data.forEach { item ->
@@ -151,9 +173,7 @@ class NycSchoolsViewModel : ViewModel() {
         }
     }
 
-    private suspend fun retrieveLocalSchoolsList(context: Context) {
-        val localDataSource = NycSchoolsLocalDataSource(context)
-
+    private suspend fun retrieveLocalSchoolsList() {
         val schoolsResponse = localDataSource.retrieveNycSchoolsList()
         if (schoolsResponse.isSuccessful) {
             schoolsResponse.data.forEach { item ->

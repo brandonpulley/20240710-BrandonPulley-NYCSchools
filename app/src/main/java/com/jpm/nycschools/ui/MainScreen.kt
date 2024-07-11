@@ -26,7 +26,6 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
     ) {
 
         val uiState = viewModel.uiState.collectAsState()
-        val context = LocalContext.current
 
         Text(
             modifier = Modifier
@@ -44,7 +43,7 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
                     viewModel.retrieveRemoteData()
                 },
                 onClickLoadLocalData = {
-                    viewModel.retrieveLocalData(context)
+                    viewModel.retrieveLocalData()
                 }
             )
         } else if (uiState.value.loading) {
