@@ -22,6 +22,7 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color.Black)
     ) {
 
         val uiState = viewModel.uiState.collectAsState()
@@ -61,6 +62,15 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
                 schoolsList = uiState.value.schoolList,
                 onClickSchool = { schoolId ->
                     viewModel.updateChosenSchool(schoolId = schoolId)
+                },
+                onReadingScoreFiltered = {
+                    // TODO
+                },
+                onMathScoreFiltered = {
+                    // TODO
+                },
+                onWritingScoreFiltered = {
+                    // TODO
                 }
             )
         }
