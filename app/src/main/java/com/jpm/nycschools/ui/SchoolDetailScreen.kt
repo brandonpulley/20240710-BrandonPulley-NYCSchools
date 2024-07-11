@@ -59,6 +59,18 @@ fun SchoolDetailScreen(school: School, satScore: SatScore, onClickDismiss: () ->
             label = stringResource(id = R.string.sat_math_score),
             details = satScore.satMathAvgScore
         )
+        LabelAndDetailsText(
+            label = stringResource(id = R.string.website),
+            details = school.website
+        )
+        LabelAndDetailsText(
+            label = stringResource(id = R.string.phone_number),
+            details = school.phoneNumber
+        )
+        LabelAndDetailsText(
+            label = stringResource(id = R.string.email_address),
+            details = school.schoolEmail
+        )
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onClickDismiss
@@ -82,7 +94,10 @@ fun SchoolDetailScreenPreview() {
         SchoolDetailScreen(
             school = School(
                 schoolName = "A Neat School",
-                city = "New Jork"
+                city = "New Jork",
+                website = "www.testsite.domain",
+                phoneNumber = "432-555-7909",
+                schoolEmail = "schoolemail@testsite.domain"
             ), satScore = SatScore(
                 schoolName = "A neat school",
                 dbn = "",

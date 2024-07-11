@@ -15,6 +15,9 @@
     <string name="sat_reading_score">SAT Critical Reading Avg Scores</string>
     <string name="sat_writing_score">SAT Writing Avg Scores</string>
     <string name="sat_math_score">SAT Math Avg Scores</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="website">Website</string>
+    <string name="email_address">Email Address</string>
     <string name="dismiss">Dismiss</string>f
     <string name="sat_filter_hint">SAT min score filter</string>
 </resources>
