@@ -63,14 +63,14 @@ fun MainScreen(viewModel: NycSchoolsViewModel) {
                 onClickSchool = { schoolId ->
                     viewModel.updateChosenSchool(schoolId = schoolId)
                 },
-                onReadingScoreFiltered = {
-                    // TODO
+                onReadingScoreFiltered = { score ->
+                    viewModel.filterMinimumSatScore(reading = score)
                 },
-                onMathScoreFiltered = {
-                    // TODO
+                onMathScoreFiltered = { score ->
+                    viewModel.filterMinimumSatScore(math = score)
                 },
-                onWritingScoreFiltered = {
-                    // TODO
+                onWritingScoreFiltered = { score ->
+                    viewModel.filterMinimumSatScore(writing = score)
                 }
             )
         }

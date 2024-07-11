@@ -30,15 +30,17 @@ data class UiState(
     val chosenSatSchoolInfo: SatScore? = null
 )
 
-class NycSchoolsViewModel: ViewModel() {
+class NycSchoolsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
     @VisibleForTesting
     val schoolsSatScores: HashMap<String, SatScore> = hashMapOf()
+
     @VisibleForTesting
     val schoolList: HashMap<String, School> = hashMapOf()
     private val remoteDataSource: NycSchoolsRemoteDataSource = NycSchoolsRemoteDataSource()
+
     @VisibleForTesting
     var hasRetrievedData = Pair(false, false)
     private val lock = Mutex()
@@ -131,6 +133,7 @@ class NycSchoolsViewModel: ViewModel() {
             retrieveLocalSatScoresList(context)
         }
     }
+
     private suspend fun retrieveLocalSatScoresList(context: Context) {
         val localDataSource = NycSchoolsLocalDataSource(context)
         val satScoresResponse = localDataSource.retrieveNycSatScoresList()
@@ -147,8 +150,9 @@ class NycSchoolsViewModel: ViewModel() {
             remoteLoadError()
         }
     }
+
     private suspend fun retrieveLocalSchoolsList(context: Context) {
-        val localDataSource: NycSchoolsLocalDataSource = NycSchoolsLocalDataSource(context)
+        val localDataSource = NycSchoolsLocalDataSource(context)
 
         val schoolsResponse = localDataSource.retrieveNycSchoolsList()
         if (schoolsResponse.isSuccessful) {
@@ -187,6 +191,38 @@ class NycSchoolsViewModel: ViewModel() {
                 chosenSchool = schoolList[schoolId],
                 chosenSatSchoolInfo = schoolsSatScores[schoolId]
             )
+        }
+    }
+
+    fun filterMinimumSatScore(reading: String = "0", writing: String = "0", math: String = "0") {
+        try {
+            val readingScore = reading.toInt()
+            val writingScore = writing.toInt()
+            val mathScore = math.toInt()
+
+            _uiState.update { currentState ->
+                val filteredSchools = currentState.schoolList.filter {
+                    try {
+                        (schoolsSatScores[it.dbn]?.satWritingAvgScore?.toInt() ?: 0) > writingScore
+                                && (schoolsSatScores[it.dbn]?.satCriticalReadingAvgScore?.toInt()
+                            ?: 0) > readingScore
+                                && (schoolsSatScores[it.dbn]?.satMathAvgScore?.toInt()
+                            ?: 0) > mathScore
+                    } catch (e: NumberFormatException) {
+                        false
+                    }
+                }
+
+                UiState(
+                    loading = currentState.loading,
+                    remoteLoadError = currentState.remoteLoadError,
+                    schoolList = filteredSchools.toList(),
+                    chosenSchool = currentState.chosenSchool,
+                    chosenSatSchoolInfo = currentState.chosenSatSchoolInfo
+                )
+            }
+        } catch (e: NumberFormatException) {
+            refreshSchoolListUi()
         }
     }
 
